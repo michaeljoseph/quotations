@@ -1,4 +1,6 @@
 VENV = venv/bin
+FILES = quotes.py tests.py
+.DEFAULT_GOAL := generate
 
 .PHONY: all help
 all: test
@@ -16,22 +18,19 @@ venv: ## Creates the virtualenv and installs requirements
 	$(VENV)/pip install -Ur requirements-dev.txt
 
 lint:venv
-	$(VENV)/flake8 transaction_importer tests
-	$(VENV)/isort -rc -c transaction_importer tests
-	$(VENV)/black -S --check transaction_importer tests
+	$(VENV)/flake8 $(FILES)
+	$(VENV)/isort -rc -c $(FILES)
+	$(VENV)/black -S --check $(FILES)
 
 style:venv
-	$(VENV)/isort -rc -y transaction_importer tests
-	$(VENV)/black -S transaction_importer tests
+	$(VENV)/isort -rc -y $(FILES)
+	$(VENV)/black -S $(FILES)
 
 test:venv
 	$(VENV)/pytest
 
-flask:venv ## Runs the hot-reloading Flask development server
-	SQS_QUEUE_NAME=local_qp-ms-transaction-importer-standardiser \
-	FLASK_APP=transaction_importer/api.py \
-	FLASK_ENV=development \
-	$(VENV)/flask run
+generate:venv ## Runs the hot-reloading Flask development server
+	$(VENV)/python quotes.py
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
