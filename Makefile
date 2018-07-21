@@ -1,9 +1,14 @@
 VENV = venv/bin
-FILES = quotes.py tests.py
+FILES = quotations tests.py
 .DEFAULT_GOAL := generate
 
 .PHONY: all help
 all: test
+
+help:
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	| sort \
+	| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-16s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: clean-pyc
 clean: ## Remove Python file artifacts and virtualenv
@@ -15,6 +20,9 @@ clean: ## Remove Python file artifacts and virtualenv
 
 venv: ## Creates the virtualenv and installs requirements
 	python3 -m venv venv
+	$(VENV)/pip install -Ur requirements-dev.txt
+
+requirements:venv ## Updates venv from requirements
 	$(VENV)/pip install -Ur requirements-dev.txt
 
 lint:venv
@@ -29,10 +37,7 @@ style:venv
 test:venv
 	$(VENV)/pytest
 
-generate:venv ## Runs the hot-reloading Flask development server
-	$(VENV)/python quotes.py
+ci: test lint ## Continuous Integration Commands
 
-help:
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
-	| sort \
-	| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-16s\033[0m %s\n", $$1, $$2}'
+generate:venv ## Runs the hot-reloading Flask development server
+	$(VENV)/python -m quotations $(filter-out $@,$(MAKECMDGOALS))

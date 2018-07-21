@@ -1,6 +1,8 @@
 -r requirements.txt
 
 black
+bpython
 flake8
 isort
 pytest
+pytest-cov

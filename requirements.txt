@@ -1,2 +1,2 @@
 python-docx
-cookiecutter
+Jinja2
