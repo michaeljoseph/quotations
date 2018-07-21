@@ -1,0 +1,10 @@
+language: python
+python:
+  - "3.6"
+install:
+  - pip install -r requirements-dev.txt
+script:
+  - pytest
+  - flake8 quotations tests.py
+  - isort -rc -c quotations tests.py
+  - black -S --check quotations tests.py 

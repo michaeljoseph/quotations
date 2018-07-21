@@ -5,6 +5,11 @@ FILES = quotations tests.py
 .PHONY: all help
 all: test
 
+help:
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	| sort \
+	| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-16s\033[0m %s\n", $$1, $$2}'
+
 .PHONY: clean-pyc
 clean: ## Remove Python file artifacts and virtualenv
 	@echo "+ $@"
@@ -17,7 +22,7 @@ venv: ## Creates the virtualenv and installs requirements
 	python3 -m venv venv
 	$(VENV)/pip install -Ur requirements-dev.txt
 
-requirements: ## Updates venv from requirements
+requirements:venv ## Updates venv from requirements
 	$(VENV)/pip install -Ur requirements-dev.txt
 
 lint:venv
@@ -32,10 +37,7 @@ style:venv
 test:venv
 	$(VENV)/pytest
 
+ci: test lint ## Continuous Integration Commands
+
 generate:venv ## Runs the hot-reloading Flask development server
 	$(VENV)/python -m quotations $(filter-out $@,$(MAKECMDGOALS))
-
-help:
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
-	| sort \
-	| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-16s\033[0m %s\n", $$1, $$2}'
