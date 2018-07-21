@@ -1,22 +1,22 @@
 """
 TODO:
-- [] cli: quotes.py <path-to-template> <path-to-data>
+- [x] cli: quotes.py <path-to-template> <path-to-data>
+- [] docx: header / footer content
 """
+import csv
+import sys
 import uuid
 
 from docx import Document
 from jinja2 import Template
 
+
 def template_render(template, replacements):
     return Template(template).render(replacements)
 
+
 def main(template_document, replacements):
     doc = Document(template_document)
-
-    # FIXME: header / footer
-    # for section in doc.sections:
-    #     print(dir(section))
-    #     print(section.header)
 
     for paragraph in doc.paragraphs:
         for run in paragraph.runs:
@@ -34,12 +34,15 @@ def main(template_document, replacements):
     print(output_filename)
     doc.save(output_filename)
 
+
 if __name__ == '__main__':
-    TEMPLATE_FILENAME='Proposal-Template.docx'
+    if len(sys.argv) < 3:
+        print('usage: quotes.py <path-to-template> <path-to-data>')
+        sys.exit(1)
+
+    _, template_path, replacements_path = sys.argv
+
     replacements = {
-        'client_name': 'Michael Joseph',
-        'system_size': '27.2 kWp',
-        'annual_production': '43 683.2 kWh/a',
-        'cost': 'R 476 292.54',
+        row['variable']: row['value'] for row in csv.DictReader(open(replacements_path))
     }
-    main(TEMPLATE_FILENAME, replacements)
+    main(template_path, replacements)

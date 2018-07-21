@@ -17,6 +17,9 @@ venv: ## Creates the virtualenv and installs requirements
 	python3 -m venv venv
 	$(VENV)/pip install -Ur requirements-dev.txt
 
+requirements: ## Updates venv from requirements
+	$(VENV)/pip install -Ur requirements-dev.txt
+
 lint:venv
 	$(VENV)/flake8 $(FILES)
 	$(VENV)/isort -rc -c $(FILES)
