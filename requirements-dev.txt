@@ -5,3 +5,4 @@ bpython
 flake8
 isort
 pytest
+pytest-cov
