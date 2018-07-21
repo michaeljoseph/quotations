@@ -1,5 +1,5 @@
 VENV = venv/bin
-FILES = quotes.py tests.py
+FILES = quotations tests.py
 .DEFAULT_GOAL := generate
 
 .PHONY: all help
@@ -33,7 +33,7 @@ test:venv
 	$(VENV)/pytest
 
 generate:venv ## Runs the hot-reloading Flask development server
-	$(VENV)/python quotes.py
+	$(VENV)/python -m quotations $(filter-out $@,$(MAKECMDGOALS))
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
