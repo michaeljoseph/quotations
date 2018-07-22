@@ -3,6 +3,7 @@
 black
 bpython
 flake8
+httpie
 isort
 pytest
 pytest-cov
