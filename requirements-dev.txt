@@ -1,9 +1,11 @@
 -r requirements.txt
 
+awsebcli
 black
 bpython
 flake8
 httpie
 isort
+requests!=2.11.0,!=2.12.2,!=2.18.0,<2.19,>=2.6.1
 pytest
 pytest-cov
