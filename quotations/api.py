@@ -3,7 +3,7 @@ import io
 import uuid
 
 from docx import Document
-from flask import Flask, flash, redirect, render_template, request, send_file
+from flask import Flask, render_template, request, send_file
 
 from quotations import generate_quote_from_template
 
@@ -24,18 +24,13 @@ def generate_quote(template, replacements):
         if allowed_file(replacements, ALLOWED_REPLACEMENTS_EXTENSIONS):
 
             cfp = io.StringIO()
-            cfp.write(
-                replacements.read().decode('utf-8')
-            )
+            cfp.write(replacements.read().decode('utf-8'))
             cfp.seek(0)
 
             replacements = {
-                row['variable']: row['value']
-                for row in csv.DictReader(cfp)
+                row['variable']: row['value'] for row in csv.DictReader(cfp)
             }
-            document = generate_quote_from_template(
-                Document(template), replacements
-            )
+            document = generate_quote_from_template(Document(template), replacements)
 
             fp = io.BytesIO()
             document.save(fp)
@@ -49,19 +44,17 @@ def generate_quote(template, replacements):
             )
     return None
 
+
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
-        error_message = None
         template = request.files['template']
         replacements = request.files['replacements']
 
         # if user does not select file, browser also
         # submit an empty part without filename
         if template.filename == '' or replacements.filename == '':
-            return {
-                'error': 'No selected files'
-            }
+            return {'error': 'No selected files'}
         return generate_quote(template, replacements)
-    
+
     return render_template('index.html')
