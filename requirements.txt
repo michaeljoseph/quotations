@@ -1,2 +1,3 @@
 python-docx
+Flask
 Jinja2

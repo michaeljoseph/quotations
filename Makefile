@@ -41,3 +41,6 @@ ci: test lint ## Continuous Integration Commands
 
 generate:venv ## Runs the hot-reloading Flask development server
 	$(VENV)/python -m quotations $(filter-out $@,$(MAKECMDGOALS))
+
+api:venv ## Runs the hot-reloading Flask development server
+	FLASK_APP=quotations.api FLASK_ENV=development $(VENV)/flask run

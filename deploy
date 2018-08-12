@@ -1,0 +1,10 @@
+ENVIRONMENT=quotations-demo-dev
+if [[ $(eb list | grep ${ENVIRONMENT}) ]]; then
+    echo "${ENVIRONMENT} exists"
+else
+    read -r -p "Press enter to confirm ${ENVIRONMENT} creation. "
+    eb create ${ENVIRONMENT} \
+        --cfg demo \
+        --cname ${ENVIRONMENT} \
+        --elb-type classic
+fi
